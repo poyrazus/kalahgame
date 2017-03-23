@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>KALAH GAME</title>
+</h:head>
+<h:body bgcolor="white">
+	<h2>KALAH GAME</h2>
+	<h:form>
+		<h:outputLabel for="numStones" value="# of stones: " />
+		<p:spinner id="numStones" value="#{gamePlay.numberOfStones}" min="3"
+			max="7" size="1">
+			<f:validateLongRange for="numStones" minimum="3" maximum="7"></f:validateLongRange>
+		</p:spinner>
+		<p:commandButton value="Start New Game" style="margin-left: 5px"
+			update="gamePanel notification"
+			actionListener="#{gamePlay.createGame}"
+			oncomplete="PF('notification').show()" />
+		<p:separator></p:separator>
+		
+		<p:panel id="gamePanel" style="width: 590px; height: 220px">
+			<p:outputPanel rendered="#{gamePlay.gameStarted}">
+				<p:inplace editor="true">
+					<p:inputText value="#{gamePlay.player1.title}" />
+				</p:inplace>
+
+				<h:panelGrid columns="3">
+					<p:panel style="width: 55px; height: 40px; text-align: center">#{gamePlay.player1.kalah.stoneCount}</p:panel>
+					<p:outputPanel>
+						<p:dataGrid var="pit" value="#{gamePlay.firstRowPits}" columns="6"
+							layout="grid">
+							<p:commandButton value="#{pit.stoneCount}" update="@form:gamePanel @form:notification"
+								action="#{gamePlay.move}" style="width: 60px; height: 60px"
+								oncomplete="PF('notification').show()" title="Play"
+								disabled="#{gamePlay.pitDisabled(pit)}">
+								<f:setPropertyActionListener value="#{pit}" target="#{gamePlay.selectedPit}" />
+							</p:commandButton>
+						</p:dataGrid>
+						<p:dataGrid var="pit" value="#{gamePlay.secondRowPits}" columns="6" layout="grid">
+							<p:commandButton value="#{pit.stoneCount}" update="@form:gamePanel @form:notification"
+								action="#{gamePlay.move}" style="width: 60px; height: 60px"
+								oncomplete="PF('notification').show()" title="Play"
+								disabled="#{gamePlay.pitDisabled(pit)}">
+								<f:setPropertyActionListener value="#{pit}" target="#{gamePlay.selectedPit}" />
+							</p:commandButton>
+						</p:dataGrid>
+					</p:outputPanel>
+					<p:panel style="width: 55px; height: 40px; text-align: center">#{gamePlay.player2.kalah.stoneCount}</p:panel>
+				</h:panelGrid>
+				<p:inplace editor="true" style="float: right">
+					<p:inputText value="#{gamePlay.player2.title}" />
+				</p:inplace>
+			</p:outputPanel>
+		</p:panel>
+		<p:notificationBar position="bottom" effect="slide"
+			widgetVar="notification">
+			<h:outputText id="notification"
+				value="#{gamePlay.notificationMessage}" style="font-size:36px;" />
+		</p:notificationBar>
+	</h:form>
+</h:body>
+</html>
